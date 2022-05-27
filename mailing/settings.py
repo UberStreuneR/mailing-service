@@ -19,7 +19,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # load_dotenv(os.path.join(BASE_DIR, '.dev.env')) # This file would normally be outside of the project directory
 # load_dotenv(os.path.join(BASE_DIR, '..', '.dev.env'))
 
-SECRET_KEY = os.environ.get("SECRET_KEY", "django-insecure-kh8ot+ag-^osyhg5itzj!iw_g#dklw3f75c0)^-7)*@^)#tc#x")
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG", False)

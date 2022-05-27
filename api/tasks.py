@@ -17,8 +17,9 @@ run_mailings_task = PeriodicTask.objects.filter(enabled=True).first()
 def run_mailings():
     mailings = Mailing.objects.filter(enabled=True)
     if mailings.count() == 0:
-        run_mailings_task.enabled = False
-        run_mailings_task.save()
+        # if run_mailings_task:
+        #     run_mailings_task.enabled = False
+        #     run_mailings_task.save()
         return
     for mailing in mailings:
         if timezone.now() > mailing.end_time:
