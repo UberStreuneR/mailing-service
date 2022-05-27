@@ -11,15 +11,15 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 import os
 # import celery
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-load_dotenv(os.path.join(BASE_DIR, '.dev.env')) # This file would normally be outside of the project directory
+# load_dotenv(os.path.join(BASE_DIR, '.dev.env')) # This file would normally be outside of the project directory
 # load_dotenv(os.path.join(BASE_DIR, '..', '.dev.env'))
 
-SECRET_KEY = os.environ.get("SECRET_KEY")
+SECRET_KEY = os.environ.get("SECRET_KEY", "django-insecure-kh8ot+ag-^osyhg5itzj!iw_g#dklw3f75c0)^-7)*@^)#tc#x")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG", False)
@@ -78,10 +78,6 @@ WSGI_APPLICATION = 'mailing.wsgi.application'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': BASE_DIR / 'db.sqlite3',
-    # },
     'default': {
         'ENGINE': os.environ.get('DB_ENGINE', 'django.db.backends.postgresql_psycopg2'),
         'NAME': os.environ.get('POSTGRES_DB'),
