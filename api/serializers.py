@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Mailing, Client, Message, Project
+from .models import Mailing, Client, Message
 
 
 
@@ -37,7 +37,7 @@ class MailingStatsSerializer(serializers.ModelSerializer):
         fields = ['start_time', 'end_time', 'message', 'filter_operator_code', 'filter_tag', 'messages_failed', 'messages_success', 'messages_uninitialized']
 
 
-class ProjectSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Project
-        fields = '__all__'
+# class ProjectSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Project
+#         fields = '__all__'

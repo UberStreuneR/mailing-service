@@ -4,8 +4,8 @@ from rest_framework.views import APIView
 from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 from rest_framework import status, viewsets
-from .serializers import MailingSerializer, MailingStatsSerializer, ClientSerializer, MessageSerializer, ProjectSerializer
-from .models import Mailing, Client, Message, Project
+from .serializers import MailingSerializer, MailingStatsSerializer, ClientSerializer, MessageSerializer
+from .models import Mailing, Client, Message
 from api import serializers
 from django.views import View
 from django.utils import timezone
@@ -14,14 +14,47 @@ from datetime import datetime
 # Create your views here.
 
 
-class ProjectViewSet(viewsets.ModelViewSet):
-    serializer_class = ProjectSerializer
-    queryset = Project.objects.all()
+# class ProjectViewSet(viewsets.ModelViewSet):
+#     serializer_class = ProjectSerializer
+#     queryset = Project.objects.all()
 
 
-class ClientViewSet(viewsets.ModelViewSet):
-    serializer_class = ClientSerializer
-    queryset = Client.objects.all()
+# class ClientViewSet(viewsets.ModelViewSet):
+#     serializer_class = ClientSerializer
+#     queryset = Client.objects.all()
+
+#     def get_object(self, pk):
+#         obj = self.queryset.get(pk=pk)
+#         return obj
+
+class ClientViewSet(viewsets.ViewSet):
+    def list(self, request):
+        clients = Client.objects.all()
+        serializer = ClientSerializer(clients, many=True)
+        return Response(serializer.data)
+
+    def create(self, request):
+        serializer = ClientSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+    def retrieve(self, request, pk=None):
+        client = Client.objects.get(pk=pk)
+        serializer = ClientSerializer(client)
+        return Response(serializer.data)
+
+    def update(self, request, pk=None):
+        client = Client.objects.get(pk=pk)
+        serializer = ClientSerializer(instance=client, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+
+    def destroy(self, request, pk=None):
+        client = Client.objects.get(pk=pk)
+        client.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class MailingViewSet(viewsets.ModelViewSet):
@@ -37,7 +70,7 @@ class MailingViewSet(viewsets.ModelViewSet):
         end_date = datetime.strptime(end_time, datetime_template)
         mailing = Mailing.objects.create(start_time=start_date, end_time=end_date, message=data['message'], filter_tag=data['filter_tag'], filter_operator_code=data['filter_operator_code'])
         
-        project = Project.objects.get_or_create(project_name="Run mailings", project_scan=10, project_status=True)
+        # project = Project.objects.get_or_create(project_name="Run mailings", project_scan=10, project_status=True)
         
         return Response(self.serializer_class(mailing).data)
 

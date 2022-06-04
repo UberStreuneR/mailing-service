@@ -19,12 +19,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # load_dotenv(os.path.join(BASE_DIR, '.dev.env')) # This file would normally be outside of the project directory
 # load_dotenv(os.path.join(BASE_DIR, '..', '.dev.env'))
 
-SECRET_KEY = os.environ.get("SECRET_KEY")
+SECRET_KEY = os.environ.get("SECRET_KEY", "django-insecure-kh8ot+ag-^osyhg5itzj!iw_g#dklw3f75c0)^-7)*@^)#tc#x")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get("DEBUG", False)
+DEBUG = os.environ.get("DEBUG", True)
 
-ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', '*').split(' ')
+# ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', '*').split(' ')
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -80,10 +81,10 @@ WSGI_APPLICATION = 'mailing.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': os.environ.get('DB_ENGINE', 'django.db.backends.postgresql_psycopg2'),
-        'NAME': os.environ.get('POSTGRES_DB'),
-        'USER': os.environ.get('POSTGRES_USER'),
-        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
-        'HOST': os.environ.get('POSTGRES_HOST', 'pgdb'),
+        'NAME': os.environ.get('POSTGRES_DB', 'mailing'),
+        'USER': os.environ.get('POSTGRES_USER', 'postgres'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD', 'password'),
+        'HOST': os.environ.get('POSTGRES_HOST', 'localhost'),
         'PORT': os.environ.get('POSTGRES_PORT', '5432')
     }
 }
@@ -130,14 +131,14 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CELERY_BROKER_URL = os.environ.get('CELERY_BROKER', 'redis://redis:6379/0')
-CELERY_RESULT_BACKEND = os.environ.get('CELERY_BACKEND', 'redis://redis:6379/0')
+CELERY_BROKER_URL = os.environ.get('CELERY_BROKER', 'amqp://localhost:5672/')
+CELERY_RESULT_BACKEND = os.environ.get('CELERY_BACKEND', 'redis://localhost:6379/0')
 
 
-CELERY_BEAT_SCHEDULE = {
-    "scheduled_task": {
-        "task": "api.tasks.run_mailings",
-        "schedule": 10.0,
-    }
-}
+# CELERY_BEAT_SCHEDULE = {
+#     "scheduled_task": {
+#         "task": "api.tasks.run_mailings",
+#         "schedule": 10.0,
+#     }
+# }
 

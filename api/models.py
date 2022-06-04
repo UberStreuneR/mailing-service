@@ -22,7 +22,7 @@ class Client(models.Model):
     number = models.CharField(max_length=11, validators=[MinLengthValidator(11)])
     operator_code = models.CharField(max_length=3, validators=[MinLengthValidator(3)], blank=True, null=True)
     tag = models.CharField(max_length=5)
-    timezone = models.CharField(max_length=32, choices=TIMEZONES, default='UTC')
+    timezone = models.CharField(max_length=32, choices=TIMEZONES, default='Europe/Moscow')
 
 class Mailing(models.Model):
     start_time = models.DateTimeField(null=True, blank=True)
@@ -44,44 +44,44 @@ class Message(models.Model):
     error = models.CharField(max_length=200, blank=True)
 
 
-class Project(models.Model):
-    project_name = models.CharField(max_length=200, unique=True)
-    project_scan = models.IntegerField()  
-    project_status = models.BooleanField()
+# class Project(models.Model):
+#     project_name = models.CharField(max_length=200, unique=True)
+#     project_scan = models.IntegerField()  
+#     project_status = models.BooleanField()
 
-    def set_periodic_task(self, task_name):
-        schedule = self.get_or_create_interval()
-        PeriodicTask.objects.create(
-            interval=schedule, 
-            name=f'{self.project_name}-{self.id}', 
-            task='api.tasks.run_mailings',
-        )
+#     def set_periodic_task(self, task_name):
+#         schedule = self.get_or_create_interval()
+#         PeriodicTask.objects.create(
+#             interval=schedule, 
+#             name=f'{self.project_name}-{self.id}', 
+#             task='api.tasks.run_mailings',
+#         )
 
-    def get_or_create_interval(self):
-        schedule, created = IntervalSchedule.objects.get_or_create(
-            every=self.project_scan,
-            period=IntervalSchedule.SECONDS,
-        )
-        return schedule
+#     def get_or_create_interval(self):
+#         schedule, created = IntervalSchedule.objects.get_or_create(
+#             every=self.project_scan,
+#             period=IntervalSchedule.SECONDS,
+#         )
+#         return schedule
 
-    def get_periodic_task(self, task_name):
-        interval = self.get_or_create_interval()
-        periodic_task = PeriodicTask.objects.get(
-            interval=interval, 
-            name=f'{self.project_name}-{self.id}', 
-            task=task_name,
-        )
-        return periodic_task
+#     def get_periodic_task(self, task_name):
+#         interval = self.get_or_create_interval()
+#         periodic_task = PeriodicTask.objects.get(
+#             interval=interval, 
+#             name=f'{self.project_name}-{self.id}', 
+#             task=task_name,
+#         )
+#         return periodic_task
 
-    def sync_disable_enable_task(self, task_name):
-        periodic_task = self.get_periodic_task(task_name)
-        periodic_task.enabled = self.project_status
-        periodic_task.save()
+#     def sync_disable_enable_task(self, task_name):
+#         periodic_task = self.get_periodic_task(task_name)
+#         periodic_task.enabled = self.project_status
+#         periodic_task.save()
 
 
-@receiver(post_save, sender=Project)
-def set_or_sync_periodic_task(sender, instance=None, created=False, **kwargs):
-    if created:
-        instance.set_periodic_task(task_name='api.tasks.run_mailing')
-    else:
-        instance.sync_disable_enable_task(task_name='api.tasks.run_mailing')
+# @receiver(post_save, sender=Project)
+# def set_or_sync_periodic_task(sender, instance=None, created=False, **kwargs):
+#     if created:
+#         instance.set_periodic_task(task_name='api.tasks.run_mailing')
+#     else:
+#         instance.sync_disable_enable_task(task_name='api.tasks.run_mailing')
