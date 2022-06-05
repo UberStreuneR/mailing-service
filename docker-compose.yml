@@ -22,44 +22,30 @@ services:
       - .:/usr/src/app/
     env_file:
       - ./.dev.env
-    # environment:
-    #   - POSTGRES_DB=django_postgres
-    #   - POSTGRES_USER=postgres
-    #   - POSTGRES_PASSWORD=password
     depends_on:
       - django
       - redis
       - pgdb
 
-  celery-beat:
-    build: .
-    command: celery -A mailing beat -l INFO
-    volumes:
-      - .:/usr/src/app/
-    env_file:
-      - ./.dev.env
-    # environment:
-    #   - POSTGRES_DB=django_postgres
-    #   - POSTGRES_USER=postgres
-    #   - POSTGRES_PASSWORD=password
-    depends_on:
-      - django
-      - redis
-      - pgdb
+  # celery-beat:
+  #   build: .
+  #   command: celery -A mailing beat -l INFO
+  #   volumes:
+  #     - .:/usr/src/app/
+  #   env_file:
+  #     - ./.dev.env
+  #   depends_on:
+  #     - django
+  #     - redis
+  #     - pgdb
 
   pgdb:
     image: postgres
     container_name: pgdb
     env_file:
       - ./.dev.env
-    # environment:
-    #   - POSTGRES_DB=django_postgres
-    #   - POSTGRES_USER=postgres
-    #   - POSTGRES_PASSWORD=password
     volumes:
       - pgdata:/var/lib/postgresql/data
-    # expose:
-    #   - "5432"
     ports:
       - "5432:5432"
     healthcheck:
@@ -67,6 +53,10 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+
+  rabbit:
+    container_name: rabbit
+    image: "rabbitmq:3.10.5"
 
   redis:
     image: "redis:alpine"

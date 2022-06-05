@@ -25,7 +25,6 @@ def designate_messages(mailing_id):
     if timezone.now() < end_time: # if there is some time left until the mailing ends
         for client in clients:
             clients_time = datetime.datetime.now(pytz.timezone(client.timezone)).replace(tzinfo=pytz.timezone("UTC")) #20:00MSK -> 20:00UTC
-            print(clients_time, start_time, clients_time > start_time, start_time - clients_time)
             if clients_time > start_time: # if it's 20:00UTC, then if clients_time is > 20:00MSK, send immediately
                 create_message.apply_async((client.id, mailing.id))
             else: # if start_time is 20:00UTC and clients_time is 19:00MSK, send in one hour
